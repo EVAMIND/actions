@@ -9,9 +9,9 @@ on:
     secrets:
       git_token:
         required: true
-      aws_ca_access_keu_id:
+      aws_ca_access_key_id:
         required: true
-      aws_ca_secrest_access_key:
+      aws_ca_secret_access_key:
         required: true
         
 jobs:
