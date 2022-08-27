@@ -25,8 +25,8 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.aws_ca_access_keu_id }}
-        aws-secret-access-key: ${{ secrets.aws_ca_secrest_access_key }}
+        aws-access-key-id: ${{ secrets.aws_ca_access_key_id }}
+        aws-secret-access-key: ${{ secrets.aws_ca_secret_access_key }}
         aws-region: us-east-1
         role-duration-seconds: 1200
         role-to-assume: arn:aws:iam::560335189946:role/nuget-role
