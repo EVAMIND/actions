@@ -31,7 +31,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.aws_ca_secret_access_key }}
         aws-region: us-east-1
         role-duration-seconds: 1200
-        role-to-assume: arn:aws:iam::${{ secrets.AWS_DOMAIN_OWNER }}:role/nuget-role
+        role-to-assume: ${{ secrets.AWS_NUGET_ROLE }}
         role-external-id: nuget
         role-session-name: NugetProfile
 
