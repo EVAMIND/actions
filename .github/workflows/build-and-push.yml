@@ -9,6 +9,10 @@ on:
     secrets:
       git_token:
         required: true
+      aws_ca_access_keu_id:
+        required: true
+      aws_ca_secrest_access_key:
+        required: true
         
 jobs:
   build:
@@ -21,8 +25,8 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_CA_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_CA_SECRET_ACCESS_KEY }}
+        aws-access-key-id: ${{ secrets.aws_ca_access_keu_id }}
+        aws-secret-access-key: ${{ secrets.aws_ca_secrest_access_key }}
         aws-region: us-east-1
         role-duration-seconds: 1200
         role-to-assume: arn:aws:iam::560335189946:role/nuget-role
