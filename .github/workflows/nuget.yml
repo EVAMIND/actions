@@ -76,4 +76,3 @@ jobs:
       with:
         destination_branch: "master"
         github_token: ${{ secrets.git_token }}
-        pr_reviewer: "andre-evamind,brendon-evamind,Felipe-Evamind,Matheus-Evamind"
