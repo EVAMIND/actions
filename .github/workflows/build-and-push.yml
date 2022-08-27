@@ -7,13 +7,7 @@ on:
         required: true
         type: string
     secrets:
-      aws_ca_access_key_id:
-        required: true
-      aws_ca_secret_access_key:
-        required: true
-      git_token_adm:
-        required: true
-      git_token_packages:
+      git_token:
         required: true
         
 jobs:
@@ -27,21 +21,21 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.aws_ca_access_key_id }}
-        aws-secret-access-key: ${{ secrets.aws_ca_secret_access_key }}
+        aws-access-key-id: ${{ secrets.AWS_CA_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_CA_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
         role-duration-seconds: 1200
-        role-to-assume: ${{ secrets.AWS_NUGET_ROLE }}
+        role-to-assume: arn:aws:iam::560335189946:role/nuget-role
         role-external-id: nuget
         role-session-name: NugetProfile
 
-    - run: echo "AUTH_TOKEN= $(aws codeartifact get-authorization-token --domain evamind --domain-owner ${{ secrets.AWS_DOMAIN_OWNER }} --query authorizationToken --output text)" >> $GITHUB_ENV
+    - run: echo "AUTH_TOKEN= $(aws codeartifact get-authorization-token --domain evamind --domain-owner 560335189946 --query authorizationToken --output text)" >> $GITHUB_ENV
     
     - name: Bump version and push tag
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.0
       with:
-        github_token: ${{ secrets.git_token_packages }}   
+        github_token: ${{ secrets.git_token }}   
         pre_release_branches: qa
         append_to_pre_release_tag: beta
 
@@ -60,11 +54,12 @@ jobs:
       run: dotnet pack ${{ inputs.project_path }} --configuration release -o:package /p:PackageVersion=${{ steps.tag_version.outputs.new_version }}
 
     - name: Prep packages
-      run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact ${{ secrets.AWS_NUGET_ENDPOINT }}
+      run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact "https://evamind-560335189946.d.codeartifact.us-east-1.amazonaws.com/nuget/evamind-nuget/v3/index.json
+"
 
     - name: Push generated package to GitHub
       run: |
-        dotnet nuget push ./package/*.nupkg -k ${{ secrets.git_token_packages }} --source "codeartifact" --skip-duplicate
+        dotnet nuget push ./package/*.nupkg -k ${{ secrets.git_token }} --source "codeartifact" --skip-duplicate
     - name: Create a GitHub release
       uses: ncipollo/release-action@v1
       with:
@@ -77,5 +72,5 @@ jobs:
       uses: repo-sync/pull-request@v2
       with:
         destination_branch: "master"
-        github_token: ${{ secrets.git_token_adm }}
+        github_token: ${{ secrets.git_token }}
         pr_reviewer: "andre-evamind,brendon-evamind,Felipe-Evamind,Matheus-Evamind"
