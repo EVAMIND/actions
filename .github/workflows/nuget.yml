@@ -69,7 +69,7 @@ jobs:
         dotnet nuget push ./package/*.nupkg -k ${{ secrets.git_token }} --source "codeartifact" --skip-duplicate
         
     - name: Create a GitHub pre release
-      if: steps.branch-name.outputs.current_branch == "qa"
+      if: contains(steps.branch-name.outputs.current_branch,'qa')
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.tag_version.outputs.new_tag }}
@@ -78,7 +78,7 @@ jobs:
         prerelease: "true"
         
     - name: Create a GitHub release
-      if: steps.branch-name.outputs.current_branch == "master"
+      if: contains(steps.branch-name.outputs.current_branch,'master')
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.tag_version.outputs.new_tag }}
