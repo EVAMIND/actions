@@ -31,11 +31,11 @@ jobs:
         aws-secret-access-key: ${{ secrets.aws_ca_secret_access_key }}
         aws-region: us-east-1
         role-duration-seconds: 1200
-        role-to-assume: arn:aws:iam::560335189946:role/nuget-role
+        role-to-assume: arn:aws:iam::${{ secrets.AWS_DOMAIN_OWNER }}:role/nuget-role
         role-external-id: nuget
         role-session-name: NugetProfile
 
-    - run: echo "AUTH_TOKEN= $(aws codeartifact get-authorization-token --domain evamind --domain-owner 560335189946 --query authorizationToken --output text)" >> $GITHUB_ENV
+    - run: echo "AUTH_TOKEN= $(aws codeartifact get-authorization-token --domain evamind --domain-owner ${{ secrets.AWS_DOMAIN_OWNER }} --query authorizationToken --output text)" >> $GITHUB_ENV
     
     - name: Bump version and push tag
       id: tag_version
@@ -60,7 +60,7 @@ jobs:
       run: dotnet pack ${{ inputs.project_path }} --configuration release -o:package /p:PackageVersion=${{ steps.tag_version.outputs.new_version }}
 
     - name: Prep packages
-      run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact "https://evamind-560335189946.d.codeartifact.us-east-1.amazonaws.com/nuget/evamind-nuget/v3/index.json"
+      run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact "https://evamind-${{ secrets.AWS_DOMAIN_OWNER }}.d.codeartifact.us-east-1.amazonaws.com/nuget/evamind-nuget/v3/index.json"
 
     - name: Push generated package to GitHub
       run: |
