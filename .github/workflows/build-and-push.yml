@@ -60,7 +60,7 @@ jobs:
       run: dotnet pack ${{ inputs.project_path }} --configuration release -o:package /p:PackageVersion=${{ steps.tag_version.outputs.new_version }}
 
     - name: Prep packages
-      run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact "https://evamind-${{ secrets.AWS_DOMAIN_OWNER }}.d.codeartifact.us-east-1.amazonaws.com/nuget/evamind-nuget/v3/index.json"
+      run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact ${{ secrets.AWS_NUGET_ENDPOINT }}
 
     - name: Push generated package to GitHub
       run: |
