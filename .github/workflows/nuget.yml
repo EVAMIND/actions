@@ -51,6 +51,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 6.0.x 
+        
+    - name: Prep packages
+      run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact "https://evamind-560335189946.d.codeartifact.us-east-1.amazonaws.com/nuget/evamind-nuget/v3/index.json"
 
     - name: Restore dependencies
       run:  dotnet restore
@@ -60,9 +63,6 @@ jobs:
       
     - name: Package nuget
       run: dotnet pack ${{ inputs.project_path }} --configuration release -o:package /p:PackageVersion=${{ steps.tag_version.outputs.new_version }}
-
-    - name: Prep packages
-      run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact "https://evamind-560335189946.d.codeartifact.us-east-1.amazonaws.com/nuget/evamind-nuget/v3/index.json"
 
     - name: Push generated package to GitHub
       run: |
