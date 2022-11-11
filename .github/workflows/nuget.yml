@@ -50,7 +50,7 @@ jobs:
     - name: Setup .NET 7
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x 
+        dotnet-version: 7.0.x 
         
     - name: Prep packages
       run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact "https://evamind-560335189946.d.codeartifact.us-east-1.amazonaws.com/nuget/evamind-nuget/v3/index.json"
