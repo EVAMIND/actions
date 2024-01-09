@@ -78,7 +78,7 @@ jobs:
         prerelease: "true"
         
     - name: Create a GitHub release
-      if: contains(toLower(steps.branch-name.outputs.current_branch),'master')
+      if: contains(steps.branch-name.outputs.current_branch,'master')
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.tag_version.outputs.new_tag }}
@@ -89,5 +89,5 @@ jobs:
       if: github.ref == 'refs/heads/qa'
       uses: repo-sync/pull-request@v2
       with:
-        destination_branch: "${{ toLower('Master') }}"
+        destination_branch: "master"
         github_token: ${{ secrets.git_token }}
