@@ -46,11 +46,13 @@ jobs:
         github_token: ${{ secrets.git_token }}   
         pre_release_branches: qa
         append_to_pre_release_tag: beta
-
-    - name: Setup .NET 7
+    
+    - name: Setup .NET SDKs
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.0.x 
+        dotnet-version: |
+          7.0.x
+          8.0.x
         
     - name: Prep packages
       run: dotnet nuget add source --username EVAMIND --password ${{ env.AUTH_TOKEN }} --store-password-in-clear-text --name codeartifact "https://evamind-560335189946.d.codeartifact.us-east-1.amazonaws.com/nuget/evamind-nuget/v3/index.json"
@@ -59,10 +61,10 @@ jobs:
       run:  dotnet restore
 
     - name: Build dotnet 
-      run: dotnet build ${{ inputs.project_path }} --configuration release /p:Version=${{ steps.tag_version.outputs.new_version }} --no-restore
+      run: dotnet build ${{ inputs.project_path }} --configuration Release --no-restore
       
     - name: Package nuget
-      run: dotnet pack ${{ inputs.project_path }} --configuration release -o:package /p:PackageVersion=${{ steps.tag_version.outputs.new_version }}
+      run: dotnet pack ${{ inputs.project_path }} --configuration Release -o:package --no-restore
 
     - name: Push generated package to GitHub
       run: |
